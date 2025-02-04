@@ -1,5 +1,7 @@
 ---
 title: "AE 04: NYC flights + data wrangling"
+author: "Hannah Andronyk"
+format: pdf
 ---
 
 ```{r}
@@ -14,8 +16,7 @@ library(nycflights13)
 
 **Your turn:** Fill in the blanks:
 
-The `flights` data frame has \_\_\_ rows.
-Each row represents a \_\_\_.
+The `flights` data frame has 336,776 rows. Each row represents a flight.
 
 ## Exercise 2
 
@@ -24,7 +25,8 @@ Each row represents a \_\_\_.
 ```{r}
 #| label: column-names
 
-# add code here
+glimpse(flights)
+colnames(flights)
 ```
 
 ## Exercise 3 - `select()`
@@ -34,7 +36,10 @@ Each row represents a \_\_\_.
 ```{r}
 #| label: select-vars
 
-# add code here
+delays <- flights %>% 
+  select(c(dep_delay, arr_delay))
+
+print(delays)
 ```
 
 -   Make a data frame that keeps every variable except `dep_delay`.
@@ -42,7 +47,10 @@ Each row represents a \_\_\_.
 ```{r}
 #| label: exclude-vars
 
-# add code here
+not_dep_delay <- flights %>% 
+  select(-dep_delay)
+
+print(not_dep_delay)
 ```
 
 -   Make a data frame that includes all variables between `year` through `dep_delay` (inclusive). These are all variables that provide information about the departure of each flight.
@@ -50,7 +58,10 @@ Each row represents a \_\_\_.
 ```{r}
 #| label: include-range
 
-# add code here
+rangeflightdf <- flights %>% 
+  select(c(year:dep_delay))
+
+print(rangeflightdf)
 ```
 
 -   Use the `select` helper `contains()` to make a data frame that includes the variables associated with the arrival, i.e., contains the string `"arr\_"` in the name.
@@ -58,7 +69,10 @@ Each row represents a \_\_\_.
 ```{r}
 #| label: arr-vars
 
-# add code here
+arrival <- flights %>% 
+  select(contains("arr_"))
+
+print(arrival)
 ```
 
 ## Exercise 4 - `slice()`
