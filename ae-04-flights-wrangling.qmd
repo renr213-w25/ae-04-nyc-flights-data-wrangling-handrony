@@ -291,7 +291,11 @@ print(mean_arr_delay)
 ```{r}
 #| label: mean-arr-delay-month
 
+mean_arr_month <- flights %>%  
+  group_by(month) %>% 
+  summarize(mean_arr_time = mean(arr_delay, na.rm = TRUE))
 
+print(mean_arr_month)
 ```
 
 -   **Your turn:** What is the median departure delay for each airports around NYC (`origin`)? Which airport has the shortest median departure delay?
@@ -299,7 +303,12 @@ print(mean_arr_delay)
 ```{r}
 #| label: median-dep-dely-origin
 
-# add code here
+median_dep_delay <- flights %>% 
+  group_by(origin) %>% 
+  summarize(median = median(dep_delay, na.rm = TRUE)) %>% 
+  arrange(median)
+
+print(median_dep_delay)
 ```
 
 # Additional Practice
