@@ -82,7 +82,10 @@ print(arrival)
 ```{r}
 #| label: slice
 
-# add code here
+first5 <- flights %>% 
+  slice(1:5)
+
+print(first5)
 ```
 
 -   Display the last two rows of the `flights` data frame.
@@ -90,7 +93,10 @@ print(arrival)
 ```{r}
 #| label: last-two
 
-# add code here
+last2 <- flights %>% 
+  tail(2)
+
+print(last2)
 ```
 
 ## Exercise 5 - `arrange()`
@@ -100,27 +106,35 @@ print(arrival)
 ```{r}
 #| label: arrange-delays
 
-# add code here
+depart_delays1 <- flights %>% 
+  arrange(dep_delay)
+
+print(depart_delays1)
 ```
 
--   Question: What does it mean for the `dep_delay` to have a negative value?
-
-Add your response here.
+-   Question: What does it mean for the `dep_delay` to have a negative value? It means this flight came early by x amount of time, we know this because this value is the difference between scheduled departure time and departure time.
 
 -   Arrange the data by descending departure delay, so the flights with the longest departure delays will be at the top.
 
 ```{r}
 #| label: arrange-delays-desc
 
-# add code here
+depart_delays2 <- flights %>% 
+  arrange(-dep_delay)
+
+print(depart_delays2)
 ```
 
--   **Your turn:** Create a data frame that only includes the plane tail number (`tailnum`), carrier (`carrier`), and departure delay for the flight with the longest departure delay. What is the plane tail number (`tailnum`) for this flight?
+-   **Your turn:** Create a data frame that only includes the plane tail number (`tailnum`), carrier (`carrier`), and departure delay for the flight with the longest departure delay. What is the plane tail number (`tailnum`) for this flight? N384HA
 
 ```{r}
 #| label: longest-delay
 
-# add code here
+tailnum_delay <- depart_delays2 %>% 
+  select(c(tailnum, carrier, dep_delay)) %>% 
+  slice(1)
+
+print(tailnum_delay)
 ```
 
 ## Exercise 6 - `filter()`
@@ -130,7 +144,10 @@ Add your response here.
 ```{r}
 #| label: rdu
 
-# add code here
+RDU_airport1 <- flights %>% 
+  filter(dest == "RDU")
+
+print(RDU_airport1)
 ```
 
 -   Filter for all rows where the destination airport is RDU and the arrival delay is less than 0.
@@ -138,12 +155,16 @@ Add your response here.
 ```{r}
 #| label: rdu-ontime
 
-# add code here
+RDU_airport2 <- flights %>% 
+  filter(dest == "RDU") %>% 
+  filter(arr_delay < 0)
+
+print(RDU_airport2)
 ```
 
 -   **Your turn:** Describe what the code is doing in words.
 
-Add response here.
+    The code is filtering the flights data set for "RDU" and "GSO" in the dest column and keeping rows for these values that correspond to less than 0 rows in arr_delay or dep_delay columns.
 
 ```{r}
 #| label: nc-early
@@ -180,23 +201,34 @@ flights |>
 ```{r}
 #| label: count-dest
 
-# add code here
+freq_flights <- flights %>% 
+  count(dest)
+
+print(freq_flights)
 ```
 
--   In which month was there the fewest number of flights? How many flights were there in that month?
+-   In which month was there the fewest number of flights? How many flights were there in that month? February had the fewest number of flights with a total of 24951 flights
 
 ```{r}
 #| label: count-month
 
-# add code here
+freq_month <- flights %>% 
+  count(month) %>% 
+  arrange(n)
+ 
+print(freq_month)
 ```
 
--   **Your turn:** On which date (month + day) was there the largest number of flights? How many flights were there on that day?
+-   **Your turn:** On which date (month + day) was there the largest number of flights? How many flights were there on that day? The largest number of flights was on November 27th with a total of 1014 flights
 
 ```{r}
 #| label: count-date
 
-# add code here
+freq_day <- flights %>% 
+  count(month, day) %>% 
+  arrange(-n)
+ 
+print(freq_day)
 ```
 
 ## Exercise 8 - `mutate()`
@@ -206,15 +238,23 @@ flights |>
 ```{r}
 #| label: calculate-mph
 
-# add code here
+flight_timehr <- flights %>% 
+  mutate(air_time = air_time/60) %>% 
+  mutate(mph = distance/air_time)
+
+print(flight_timehr)
 ```
 
--   **Your turn:** First, count the number of flights each month, and then calculate the proportion of flights in each month. What proportion of flights take place in July?
+-   **Your turn:** First, count the number of flights each month, and then calculate the proportion of flights in each month. What proportion of flights take place in July? 0.087
 
 ```{r}
 #| label: months-prop
 
-# add code here
+month_prop <- flights %>% 
+  count(month) %>% 
+  mutate(prop_flight = n/sum(n))
+
+print(month_prop)
 ```
 
 -   Create a new variable, `rdu_bound`, which indicates whether the flight is to RDU or not. Then, for each departure airport (`origin`), calculate what proportion of flights originating from that airport are to RDU.
@@ -222,7 +262,13 @@ flights |>
 ```{r}
 #| label: rdu-origin-prop
 
-# add code here
+RDU_flights <- flights %>%  
+  mutate(rdu_bound = if_else(dest == "RDU", "Yes", "No")) %>%
+  group_by(origin) %>% 
+  mutate(prop_rdu = sum(rdu_bound == "Yes")/n()) %>% 
+  count(prop_rdu)
+
+print(RDU_flights)  
 ```
 
 ## Exercise 9 - `summarize()`
@@ -232,7 +278,10 @@ flights |>
 ```{r}
 #| label: find-arrival-delay
 
-# add code here
+mean_arr_delay <- flights %>%
+  summarize(mean_arr_time = mean(arr_delay, na.rm = TRUE))
+
+print(mean_arr_delay)
 ```
 
 ## Exercise 10 - `group_by()`
@@ -242,7 +291,7 @@ flights |>
 ```{r}
 #| label: mean-arr-delay-month
 
-# add code here
+
 ```
 
 -   **Your turn:** What is the median departure delay for each airports around NYC (`origin`)? Which airport has the shortest median departure delay?
